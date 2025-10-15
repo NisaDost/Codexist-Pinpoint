@@ -4,7 +4,6 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
-import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -54,7 +53,7 @@ public class JwtTokenProvider {
     public boolean validateToken(String token){
         try{
             Jwts.parser()
-                    .verifyWith( getSigningKey())
+                    .verifyWith(getSigningKey())
                     .build()
                     .parseSignedClaims(token);
             return true;
