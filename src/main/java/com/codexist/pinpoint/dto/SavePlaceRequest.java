@@ -9,7 +9,7 @@ public class SavePlaceRequest {
     private String placeId;
 
     @NotBlank(message = "Place name is required.")
-    private String placeName; //silebilirim?
+    private String placeName;
 
     @NotBlank(message = "Latitude is required.")
     private String latitude;
@@ -19,6 +19,6 @@ public class SavePlaceRequest {
 
     private String address;
 
-    @NotBlank(message = "Custom name is required.")
+    @NotBlank(message = "Custom name is required.") //nullable olabilir.
     private String customName;
 }

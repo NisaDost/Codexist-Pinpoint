@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 public class SavedPlaceResponse {
     private String id;
     private String placeId;
-    private String placeName; //silebilirim?
+    private String placeName;
     private String customName;
     private Double latitude;
     private Double longitude;
