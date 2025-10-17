@@ -10,6 +10,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 
 import java.time.LocalDateTime;
+import java.util.Locale;
 import java.util.Optional;
 
 @Service
@@ -59,7 +60,7 @@ public class PlacesService {
 
     private String callGooglePlacesApi(Double lat, Double lng, Integer rad, String type){
         try{
-            String url = String.format("%s?location=%f,%f&radius=%d&type=%s&key=%s",
+            String url = String.format(Locale.US, "%s?location=%f,%f&radius=%d&type=%s&key=%s",
                     baseUrl, lat, lng, rad, type, apiKey);
 
             System.out.println("Calling Google Places API: " + url);
