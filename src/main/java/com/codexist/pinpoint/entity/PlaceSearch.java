@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "place_searches", indexes = {
-        @Index(name = "idx_search_params", columnList = "latitude, longtitude, radius")
+        @Index(name = "idx_search_params", columnList = "latitude, longitude, radius")
 })
 @Data
 @NoArgsConstructor
