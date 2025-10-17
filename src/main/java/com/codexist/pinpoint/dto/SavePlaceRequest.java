@@ -12,10 +12,10 @@ public class SavePlaceRequest {
     private String placeName;
 
     @NotBlank(message = "Latitude is required.")
-    private String latitude;
+    private Double latitude;
 
     @NotBlank(message = "Longitude is required.")
-    private String longitude;
+    private Double longitude;
 
     private String address;
 
