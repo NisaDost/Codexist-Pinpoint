@@ -50,11 +50,11 @@ public class SecurityConfig {
     public SecurityFilterChain FilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(csrf -> csrf.disable())
-                .cors(cors -> cors.disable())
+                .cors(cors -> cors.configure(http))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/**").permitAll()
-                        .requestMatchers("/api/places/nearby/").permitAll()
+                        .requestMatchers("/api/places/nearby").permitAll()
                         .requestMatchers("/api/saved-places/**").authenticated()
                         .anyRequest().permitAll()
                 )
@@ -63,5 +63,3 @@ public class SecurityConfig {
         return http.build();
     }
 }
-
-

@@ -23,8 +23,8 @@ public class PlacesController {
 
     @GetMapping("/nearby")
     public ResponseEntity<?> getNearbyPlaces(
-            @RequestParam Double longitude,
             @RequestParam Double latitude,
+            @RequestParam Double longitude,
             @RequestParam Integer radius,
             HttpServletRequest request,
             Authentication authentication
@@ -52,6 +52,7 @@ public class PlacesController {
                     )
             );
         }
+
         if (radius < 1 || radius > 50000) {
             return ResponseEntity.badRequest().body(
                     new ErrorResponse(

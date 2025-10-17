@@ -1,6 +1,5 @@
 package com.codexist.pinpoint.service;
 
-
 import com.codexist.pinpoint.entity.PlaceSearch;
 import com.codexist.pinpoint.repository.PlaceSearchRepository;
 import jakarta.transaction.Transactional;
@@ -36,8 +35,8 @@ public class PlacesService {
 
     @Transactional
     public String searchNearbyPlaces(Double lat, Double lng, Integer rad, String userIdentifier){
-        if(rateLimitService.tryConsume(userIdentifier)){
-           throw new RuntimeException("Rate limit exceeded. Please try again later.");
+        if(!rateLimitService.tryConsume(userIdentifier)){
+            throw new RuntimeException("Rate limit exceeded. Please try again later.");
         }
         Optional<PlaceSearch> cachedSearch = placeSearchRepository.findByValidCachedSearch(
                 lat, lng, rad, LocalDateTime.now()
@@ -46,7 +45,7 @@ public class PlacesService {
             return cachedSearch.get().getResponse();
         }
 
-        String response = callGooglePLacesApi(lat, lng, rad);
+        String response = callGooglePlacesApi(lat, lng, rad);
 
         PlaceSearch placeSearch = new PlaceSearch();
         placeSearch.setLatitude(lat);
@@ -58,10 +57,13 @@ public class PlacesService {
         return response;
     }
 
-    private String callGooglePLacesApi(Double lat, Double lng, Integer rad){
+    private String callGooglePlacesApi(Double lat, Double lng, Integer rad){
         try{
             String url = String.format("%s?location=%f,%f&radius=%d&key=%s",
                     baseUrl, lat, lng, rad, apiKey);
+
+            System.out.println("Calling Google Places API: " + url);
+
             return webClient.get()
                     .uri(url)
                     .retrieve()
@@ -69,6 +71,7 @@ public class PlacesService {
                     .block();
         }
         catch(WebClientResponseException e){
+            System.err.println("Google API Error: " + e.getResponseBodyAsString());
             throw new RuntimeException("Error calling Google Places API: " + e.getMessage());
         }
     }

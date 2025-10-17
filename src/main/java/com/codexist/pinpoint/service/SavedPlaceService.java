@@ -28,7 +28,7 @@ public class SavedPlaceService {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("Username not found."));
 
-        if(savedPlaceRepository.existsByUserAndPlaceId(user,request.getPlaceId()))
+        if(savedPlaceRepository.existsByUserAndPlaceId(user, request.getPlaceId()))
         {
             throw new RuntimeException("Place already saved.");
         }
@@ -42,11 +42,13 @@ public class SavedPlaceService {
         savedPlace.setAddress(request.getAddress());
         savedPlace.setCustomName(request.getCustomName());
 
+        savedPlace = savedPlaceRepository.save(savedPlace);
+
         return convertToResponse(savedPlace);
     }
 
     @Transactional
-    public List<SavedPlaceResponse> getUserSaveDPlaceS(String username){
+    public List<SavedPlaceResponse> getUserSavedPlaces(String username){
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("Username not found."));
 

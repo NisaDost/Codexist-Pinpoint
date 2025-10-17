@@ -46,7 +46,7 @@ public class SavedPlacesController {
 
     @GetMapping
     public ResponseEntity<List<SavedPlaceResponse>> getSavedPlaces(Authentication authentication) {
-        List<SavedPlaceResponse> savedPlaces = savedPlaceService.getUserSaveDPlaceS(authentication.getName());
+        List<SavedPlaceResponse> savedPlaces = savedPlaceService.getUserSavedPlaces(authentication.getName());
         return ResponseEntity.ok(savedPlaces);
     }
 
