@@ -3,7 +3,6 @@ package com.codexist.pinpoint.controller;
 import com.codexist.pinpoint.dto.ErrorResponse;
 import com.codexist.pinpoint.dto.SavePlaceRequest;
 import com.codexist.pinpoint.dto.SavedPlaceResponse;
-import com.codexist.pinpoint.entity.SavedPlace;
 import com.codexist.pinpoint.service.SavedPlaceService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
