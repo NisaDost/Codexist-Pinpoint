@@ -39,6 +39,7 @@ public class SavedPlaceService {
         savedPlace.setPlaceName(request.getPlaceName());
         savedPlace.setLatitude(request.getLatitude());
         savedPlace.setLongitude(request.getLongitude());
+        savedPlace.setType(request.getType());
         savedPlace.setAddress(request.getAddress());
         savedPlace.setCustomName(request.getCustomName());
 
@@ -77,6 +78,7 @@ public class SavedPlaceService {
                 savedPlace.getCustomName(),
                 savedPlace.getLatitude(),
                 savedPlace.getLongitude(),
+                savedPlace.getType(),
                 savedPlace.getAddress(),
                 savedPlace.getCreatedAt()
         );

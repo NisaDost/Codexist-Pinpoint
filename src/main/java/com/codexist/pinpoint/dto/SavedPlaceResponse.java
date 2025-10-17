@@ -14,7 +14,7 @@ public class SavedPlaceResponse {
     private String customName;
     private Double latitude;
     private Double longitude;
+    private String type;
     private String address;
     private LocalDateTime createdAt;
 }
-

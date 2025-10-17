@@ -28,6 +28,9 @@ public class PlaceSearch {
     @Column(nullable = false)
     private Integer radius;
 
+    @Column
+    private String type;
+
     @Column(columnDefinition = "TEXT", nullable = false)
     private String response;
 

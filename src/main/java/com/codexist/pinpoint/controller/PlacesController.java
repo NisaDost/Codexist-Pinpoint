@@ -26,6 +26,7 @@ public class PlacesController {
             @RequestParam Double latitude,
             @RequestParam Double longitude,
             @RequestParam Integer radius,
+            @RequestParam String type,
             HttpServletRequest request,
             Authentication authentication
     ) {
@@ -70,7 +71,7 @@ public class PlacesController {
                     ? authentication.getName()
                     : request.getRemoteAddr();
 
-            String response = placesService.searchNearbyPlaces(latitude, longitude, radius, userIdentifier);
+            String response = placesService.searchNearbyPlaces(latitude, longitude, radius, type, userIdentifier);
             return ResponseEntity.status(HttpStatus.OK).body(response);
         }
         catch (RuntimeException e){

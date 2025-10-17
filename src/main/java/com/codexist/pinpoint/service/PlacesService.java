@@ -34,18 +34,18 @@ public class PlacesService {
     }
 
     @Transactional
-    public String searchNearbyPlaces(Double lat, Double lng, Integer rad, String userIdentifier){
+    public String searchNearbyPlaces(Double lat, Double lng, Integer rad, String type, String userIdentifier){
         if(!rateLimitService.tryConsume(userIdentifier)){
             throw new RuntimeException("Rate limit exceeded. Please try again later.");
         }
         Optional<PlaceSearch> cachedSearch = placeSearchRepository.findByValidCachedSearch(
-                lat, lng, rad, LocalDateTime.now()
+                lat, lng, rad, type, LocalDateTime.now()
         );
         if(cachedSearch.isPresent()){
             return cachedSearch.get().getResponse();
         }
 
-        String response = callGooglePlacesApi(lat, lng, rad);
+        String response = callGooglePlacesApi(lat, lng, rad, type);
 
         PlaceSearch placeSearch = new PlaceSearch();
         placeSearch.setLatitude(lat);
@@ -57,10 +57,10 @@ public class PlacesService {
         return response;
     }
 
-    private String callGooglePlacesApi(Double lat, Double lng, Integer rad){
+    private String callGooglePlacesApi(Double lat, Double lng, Integer rad, String type){
         try{
-            String url = String.format("%s?location=%f,%f&radius=%d&key=%s",
-                    baseUrl, lat, lng, rad, apiKey);
+            String url = String.format("%s?location=%f,%f&radius=%d&type=%s&key=%s",
+                    baseUrl, lat, lng, rad, type, apiKey);
 
             System.out.println("Calling Google Places API: " + url);
 

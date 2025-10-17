@@ -33,6 +33,9 @@ public class SavedPlace {
     @Column(nullable = false)
     private Double longitude;
 
+    @Column
+    private String type;
+
     @Column(columnDefinition = "TEXT")
     private String address;
 

@@ -18,6 +18,8 @@ public class SavePlaceRequest {
     @NotNull(message = "Longitude is required.")
     private Double longitude;
 
+    private String type;
+
     private String address;
 
     private String customName;
