@@ -4,6 +4,8 @@ import com.codexist.pinpoint.dto.AuthResponse;
 import com.codexist.pinpoint.dto.LoginRequest;
 import com.codexist.pinpoint.dto.RegisterRequest;
 import com.codexist.pinpoint.entity.User;
+import com.codexist.pinpoint.exception.EmailAlreadyExistsException;
+import com.codexist.pinpoint.exception.UsernameAlreadyExistsException;
 import com.codexist.pinpoint.repository.UserRepository;
 import com.codexist.pinpoint.security.JwtTokenProvider;
 import jakarta.transaction.Transactional;
@@ -25,18 +27,19 @@ public class AuthService {
     private PasswordEncoder passwordEncoder;
 
     @Autowired
-    private AuthenticationManager  authenticationManager;
+    private AuthenticationManager authenticationManager;
 
     @Autowired
     private JwtTokenProvider jwtTokenProvider;
 
     @Transactional
     public AuthResponse register(RegisterRequest request) {
-        if(userRepository.existsByUsername(request.getUsername())) {
-            throw new RuntimeException("Username is already in use");
+        if (userRepository.existsByUsername(request.getUsername())) {
+            throw new UsernameAlreadyExistsException("Username '" + request.getUsername() + "' is already in use");
         }
-        if(userRepository.existsByEmail(request.getEmail())) {
-            throw new RuntimeException("Email is already in use");
+
+        if (userRepository.existsByEmail(request.getEmail())) {
+            throw new EmailAlreadyExistsException("Email '" + request.getEmail() + "' is already in use");
         }
 
         User user = new User();
@@ -45,9 +48,11 @@ public class AuthService {
         user.setPassword(passwordEncoder.encode(request.getPassword()));
 
         userRepository.save(user);
+
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword())
         );
+
         String token = jwtTokenProvider.generateToken(authentication);
 
         return new AuthResponse(token, user.getUsername(), user.getEmail());
@@ -61,7 +66,7 @@ public class AuthService {
         String token = jwtTokenProvider.generateToken(authentication);
 
         User user = userRepository.findByUsername(request.getUsername())
-                .orElseThrow(() -> new UsernameNotFoundException(request.getUsername()));
+                .orElseThrow(() -> new UsernameNotFoundException("User not found: " + request.getUsername()));
 
         return new AuthResponse(token, user.getUsername(), user.getEmail());
     }

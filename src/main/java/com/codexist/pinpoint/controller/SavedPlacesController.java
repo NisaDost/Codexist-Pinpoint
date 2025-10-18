@@ -1,10 +1,8 @@
 package com.codexist.pinpoint.controller;
 
-import com.codexist.pinpoint.dto.ErrorResponse;
 import com.codexist.pinpoint.dto.SavePlaceRequest;
 import com.codexist.pinpoint.dto.SavedPlaceResponse;
 import com.codexist.pinpoint.service.SavedPlaceService;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -12,7 +10,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -23,25 +20,11 @@ public class SavedPlacesController {
     private SavedPlaceService savedPlaceService;
 
     @PostMapping
-    public ResponseEntity<?> savePlace (
+    public ResponseEntity<SavedPlaceResponse> savePlace(
             @Valid @RequestBody SavePlaceRequest request,
-            Authentication authentication,
-            HttpServletRequest httpRequest) {
-        try{
-            SavedPlaceResponse response = savedPlaceService.savePlace(request, authentication.getName());
-            return ResponseEntity.status(HttpStatus.CREATED).body(response);
-        }
-        catch (RuntimeException e){
-            ErrorResponse error = new ErrorResponse(
-                    LocalDateTime.now(),
-                    HttpStatus.BAD_REQUEST.value(),
-                    "Save failed.",
-                    e.getMessage(),
-                    httpRequest.getRequestURI()
-            );
-
-            return ResponseEntity.badRequest().body(error);
-        }
+            Authentication authentication) {
+        SavedPlaceResponse response = savedPlaceService.savePlace(request, authentication.getName());
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @GetMapping
@@ -51,24 +34,11 @@ public class SavedPlacesController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteSavedPlace(
+    public ResponseEntity<Void> deleteSavedPlace(
             @PathVariable String id,
-            Authentication authentication,
-            HttpServletRequest httpRequest
+            Authentication authentication
     ) {
-        try {
-            savedPlaceService.deleteSavedPlace(id, authentication.getName());
-            return ResponseEntity.noContent().build();
-        }
-        catch (RuntimeException e){
-            ErrorResponse error = new ErrorResponse(
-                    LocalDateTime.now(),
-                    HttpStatus.NOT_FOUND.value(),
-                    "Delete Failed",
-                    e.getMessage(),
-                    httpRequest.getRequestURI()
-            );
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
-        }
+        savedPlaceService.deleteSavedPlace(id, authentication.getName());
+        return ResponseEntity.noContent().build();
     }
 }

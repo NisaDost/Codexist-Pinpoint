@@ -4,6 +4,8 @@ import com.codexist.pinpoint.dto.SavePlaceRequest;
 import com.codexist.pinpoint.dto.SavedPlaceResponse;
 import com.codexist.pinpoint.entity.SavedPlace;
 import com.codexist.pinpoint.entity.User;
+import com.codexist.pinpoint.exception.PlaceAlreadySavedException;
+import com.codexist.pinpoint.exception.PlaceNotFoundException;
 import com.codexist.pinpoint.repository.SavedPlaceRepository;
 import com.codexist.pinpoint.repository.UserRepository;
 import jakarta.transaction.Transactional;
@@ -24,13 +26,12 @@ public class SavedPlaceService {
     private UserRepository userRepository;
 
     @Transactional
-    public SavedPlaceResponse savePlace(SavePlaceRequest request, String username){
+    public SavedPlaceResponse savePlace(SavePlaceRequest request, String username) {
         User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException("Username not found."));
+                .orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
 
-        if(savedPlaceRepository.existsByUserAndPlaceId(user, request.getPlaceId()))
-        {
-            throw new RuntimeException("Place already saved.");
+        if (savedPlaceRepository.existsByUserAndPlaceId(user, request.getPlaceId())) {
+            throw new PlaceAlreadySavedException("Place '" + request.getPlaceName() + "' is already saved");
         }
 
         SavedPlace savedPlace = new SavedPlace();
@@ -49,9 +50,9 @@ public class SavedPlaceService {
     }
 
     @Transactional
-    public List<SavedPlaceResponse> getUserSavedPlaces(String username){
+    public List<SavedPlaceResponse> getUserSavedPlaces(String username) {
         User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException("Username not found."));
+                .orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
 
         return savedPlaceRepository.findByUserOrderByCreatedAtDesc(user)
                 .stream()
@@ -60,17 +61,17 @@ public class SavedPlaceService {
     }
 
     @Transactional
-    public void deleteSavedPlace(String id, String username){
+    public void deleteSavedPlace(String id, String username) {
         User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException("Username not found."));
+                .orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
 
         SavedPlace savedPlace = savedPlaceRepository.findByIdAndUser(id, user)
-                .orElseThrow(() -> new RuntimeException("Saved place not found."));
+                .orElseThrow(() -> new PlaceNotFoundException("Saved place not found with id: " + id));
 
         savedPlaceRepository.delete(savedPlace);
     }
 
-    private SavedPlaceResponse convertToResponse(SavedPlace savedPlace){
+    private SavedPlaceResponse convertToResponse(SavedPlace savedPlace) {
         return new SavedPlaceResponse(
                 savedPlace.getId(),
                 savedPlace.getPlaceId(),
