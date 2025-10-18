@@ -1,6 +1,7 @@
 package com.codexist.pinpoint.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -27,6 +28,7 @@ public class User {
     private String email;
 
     @Column(nullable = false)
+    @Size(min = 8, max = 32)
     private String password;
 
     @Column(name = "created_at", nullable = false, updatable = false)
